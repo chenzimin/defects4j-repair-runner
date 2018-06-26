@@ -13,10 +13,10 @@ class Astor(Tool):
 		super(Astor, self).__init__(name, "astor")
 		self.maxExecution = "01:30:00"
 
-	def runAstor(self, 
-		project, 
+	def runAstor(self,
+		project,
 		id,
-		mode="statement",
+		mode="jGenProg",
 		maxgen="1000000",
 		population="1",
 		seed="10"):
@@ -34,32 +34,33 @@ class Astor(Tool):
 		reg = re.compile('- (.*)::(.*)')
 		m = reg.findall(info)
 		for i in m:
-			failingTest += i[0] + ":"    
+			failingTest += i[0] + ":"
 
 		workdir = self.initTask(project, id)
 		cmd = 'cd ' + workdir +  ';'
-		cmd += 'export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8;'
-		cmd += 'TZ="America/New_York"; export TZ'
-		cmd += 'export PATH="' + conf.javaHome8 + ':$PATH";'
-		cmd += 'time java %s -cp %s %s' % (conf.javaArgs, self.jar, self.main)
+		#cmd += 'export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8;'
+		cmd += 'TZ="America/New_York"; export TZ;'
+		#cmd += 'export PATH="' + conf.javaHome7 + ':$PATH";'
+		cmd += 'time java %s -cp %s %s' % (conf.javaArgs, "/Users/zimin/Desktop/KTH/Master-Thesis/astor/lib/jtestex7.jar:"+self.jar, self.main)
 		cmd += ' -mode ' + mode
-		cmd += ' -location .' 
-		cmd += ' -dependencies lib/'
+		cmd += ' -location ' + workdir
+		cmd += ' -dependencies ' + os.path.join(workdir, "lib/")
 		cmd += ' -failing ' + failingTest
 		cmd += ' -package ' + project.package
-		cmd += ' -jvm4testexecution ' + conf.javaHome8
+		cmd += ' -jvm4testexecution ' + conf.javaHome7
 		cmd += ' -javacompliancelevel ' + str(project.complianceLevel[str(id)]['source'])
 		cmd += ' -maxgen ' + maxgen
 		cmd += ' -seed ' + seed
-		cmd += ' -maxtime %d ' % (60)
-		cmd += ' -scope local '
+		cmd += ' -maxtime %d' % (60)
+		cmd += ' -scope local'
 		cmd += ' -stopfirst false'
 		cmd += ' -flthreshold 0'
-		cmd += ' -population ' + population 
+		cmd += ' -population ' + population
 		cmd += ' -srcjavafolder ' + source['srcjava']
 		cmd += ' -srctestfolder ' + source['srctest']
 		cmd += ' -binjavafolder ' + source['binjava']
-		cmd += ' -bintestfolder ' + source['bintest'] + ';'
+		cmd += ' -bintestfolder ' + source['bintest'] + ";"
+
 
 		path = os.path.join(project.logPath, str(id), self.name, 'result')
 		print path
@@ -68,7 +69,7 @@ class Astor(Tool):
 		#cmd += 'cp -r outputMutation/ ' + os.path.dirname(path) + ';'
 		cmd += 'echo "\n\nNode: `hostname`\n";'
 		cmd += 'echo "\nDate: `date`\n";'
-		cmd += 'rm -rf ' + workdir +  ';'
+		#cmd += 'rm -rf ' + workdir +  ';'
 
 		logPath = os.path.join(project.logPath, str(id), self.name, "stdout.log.full")
 		logFile = file(logPath, 'w')
@@ -85,10 +86,10 @@ class Astor(Tool):
 				if(len(slittedLog) > 1):
 					print slittedLog[1]
 					self.parseLog(slittedLog[1], project, id)
-		
 
-	def run(self, 
-		project, 
+
+	def run(self,
+		project,
 		id):
 		self.runAstor(project, id)
 
@@ -189,7 +190,7 @@ class Astor(Tool):
 			v = t.findall(i[1])
 			for j in v:
 				results["timeVal" + i[0]].append(int(j))
-			
+
 
 		path = os.path.join(project.logPath, str(id), self.name, "results.json")
 		if not os.path.exists(os.path.dirname(path)):

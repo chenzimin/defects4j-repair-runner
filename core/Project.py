@@ -28,8 +28,8 @@ class Project(object):
 
 	def compile(self, workingDirecotory):
 		cmd = 'export PATH="' + Defects4j().getBinPath() + ':$PATH";'
-		cmd += 'export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8;'
-		cmd += 'export PATH="' + conf.javaHome + ':$PATH";'
+		#cmd += 'export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8;'
+		#cmd += 'export PATH="' + conf.javaHome + ':$PATH";'
 		cmd += 'cd ' + workingDirecotory +';'
 		cmd += 'defects4j compile;'
 		return subprocess.check_call(cmd, shell=True)
