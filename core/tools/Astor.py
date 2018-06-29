@@ -57,21 +57,15 @@ class Astor(Tool):
 		#cmd += 'export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8;'
 		cmd += 'TZ="America/New_York"; export TZ;'
 		#cmd += 'export PATH="' + conf.javaHome7 + ':$PATH";'
-		cmd += 'time java %s -cp %s %s' % (conf.javaArgs, "/Users/zimin/Desktop/KTH/Master-Thesis/astor/lib/jtestex7.jar:"+self.jar, self.main)
-		cmd += ' -mode ' + mode
+		cmd += 'time java %s -cp %s %s' % (conf.javaArgs, "/Users/zimin/Desktop/KTH/Master-Thesis/defects4j-repair-runner/commons-cli-1.4.jar:/Users/zimin/Desktop/KTH/Master-Thesis/defects4j-repair-runner/astor-0.0.2-SNAPSHOT-jar-with-dependencies.jar:/Users/zimin/Desktop/KTH/Master-Thesis/defects4j-repair-runner/", "main")
 		cmd += ' -location ' + workdir
 		cmd += ' -dependencies ' + classpath
 		cmd += ' -failing ' + failingTest
 		cmd += ' -package ' + project.package
-		cmd += ' -jvm4testexecution ' + conf.javaHome7
 		cmd += ' -javacompliancelevel ' + str(project.complianceLevel[str(id)]['source'])
-		cmd += ' -maxgen ' + maxgen
-		cmd += ' -seed ' + seed
-		cmd += ' -maxtime %d' % (60)
-		cmd += ' -scope local'
-		cmd += ' -stopfirst false'
 		cmd += ' -flthreshold 0'
-		cmd += ' -population ' + population
+		cmd += ' -project ' + project.name
+		cmd += ' -bugid ' + str(id)
 		cmd += ' -srcjavafolder ' + source['srcjava']
 		cmd += ' -srctestfolder ' + source['srctest']
 		cmd += ' -binjavafolder ' + source['binjava']
@@ -85,12 +79,13 @@ class Astor(Tool):
 		#cmd += 'cp -r outputMutation/ ' + os.path.dirname(path) + ';'
 		cmd += 'echo "\n\nNode: `hostname`\n";'
 		cmd += 'echo "\nDate: `date`\n";'
-		#cmd += 'rm -rf ' + workdir +  ';'
+		cmd += 'rm -rf ' + workdir +  ';'
 
 		logPath = os.path.join(project.logPath, str(id), self.name, "stdout.log.full")
 		logFile = file(logPath, 'w')
 		print cmd
-		subprocess.call(cmd, shell=True, stdout=logFile)
+		subprocess.call(cmd, shell=True)
+		'''
 		with open(logPath) as data_file:
 			log = data_file.read()
 			slittedLog = log.split('----SUMMARY_EXECUTION---')
@@ -102,6 +97,7 @@ class Astor(Tool):
 				if(len(slittedLog) > 1):
 					print slittedLog[1]
 					self.parseLog(slittedLog[1], project, id)
+		'''
 
 
 	def run(self,
