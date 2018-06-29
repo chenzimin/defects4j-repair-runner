@@ -28,6 +28,23 @@ class Astor(Tool):
 		cmdInfo = 'export PATH="' + conf.defects4jRoot + '/framework/bin:$PATH";'
 		cmdInfo += 'defects4j info -p ' + project.name + ' -b ' + str(id)
 		info = subprocess.check_output(cmdInfo, shell=True)
+		workdir = self.initTask(project, id)
+
+		#New Astor:
+		classpath = ""
+        	for index, cp in project.classpath.iteritems():
+            		if id <= int(index):
+                		for c in cp.split(":"):
+                		    if classpath != "":
+                        		classpath += ":"
+              	     		    classpath += os.path.join(workdir, c)
+                		break
+		##
+		for lib in project.libs:
+            		if os.path.exists(os.path.join(workdir, "lib", lib)):
+                		classpath += ":" + os.path.join(workdir, "lib", lib)
+        	classpath += ":" + self.jar
+		##end new
 
 		# extracts failing test cases
 		failingTest = ""
@@ -36,7 +53,6 @@ class Astor(Tool):
 		for i in m:
 			failingTest += i[0] + ":"
 
-		workdir = self.initTask(project, id)
 		cmd = 'cd ' + workdir +  ';'
 		#cmd += 'export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8;'
 		cmd += 'TZ="America/New_York"; export TZ;'
@@ -44,7 +60,7 @@ class Astor(Tool):
 		cmd += 'time java %s -cp %s %s' % (conf.javaArgs, "/Users/zimin/Desktop/KTH/Master-Thesis/astor/lib/jtestex7.jar:"+self.jar, self.main)
 		cmd += ' -mode ' + mode
 		cmd += ' -location ' + workdir
-		cmd += ' -dependencies ' + os.path.join(workdir, "lib/")
+		cmd += ' -dependencies ' + classpath
 		cmd += ' -failing ' + failingTest
 		cmd += ' -package ' + project.package
 		cmd += ' -jvm4testexecution ' + conf.javaHome7
