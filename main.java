@@ -93,7 +93,7 @@ public static void main(String[] args) throws Exception
         // Get the suspicious
         List<SuspiciousModificationPoint> susp = zmengine.getSuspicious();
         SuspiciousFile suspFile = null;
-        String path_output = "/mnt/vdb1/home/ubuntu/output_extension";
+        String path_output = "/mnt/vdb/output_extension";
         int id = 1;
         PrintWriter writer = null;
         String path_to_patch;
