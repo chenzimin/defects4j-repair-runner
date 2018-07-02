@@ -1,6 +1,6 @@
 {
 	"name": "Astor",
 	"version": "0.0.2",
-	"jar": "/Users/zimin/Desktop/KTH/Master-Thesis/defects4j-repair-runner/astor-0.0.2-SNAPSHOT-jar-with-dependencies.jar",
+	"jar": "/mnt/vdb1/home/ubuntu/defects4j-repair-runner/astor-0.0.2-SNAPSHOT-jar-with-dependencies.jar",
 	"main": "fr.inria.main.evolution.AstorMain"
 }

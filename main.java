@@ -93,14 +93,13 @@ public static void main(String[] args) throws Exception
         // Get the suspicious
         List<SuspiciousModificationPoint> susp = zmengine.getSuspicious();
         SuspiciousFile suspFile = null;
-        String path_output = "/Users/zimin/Desktop/KTH/Master-Thesis/output_extension";
+        String path_output = "/mnt/vdb1/home/ubuntu/output_extension";
         int id = 1;
         PrintWriter writer = null;
         String path_to_patch;
         File patch = null;
         FileProgramVariant fvariant = null;
         VariantValidationResult resultValidation = null;
-        List<String> correct_patch = new ArrayList<String>();
         System.out.println("Number of SuspiciousModificationPoint: " + susp.size());
 
         for(SuspiciousModificationPoint smp : susp)
@@ -109,7 +108,8 @@ public static void main(String[] args) throws Exception
                 Collections.sort(ingredientPool, new normalized_lcs_comparator(suspFile.getSuspiciousLine().trim()));
                 List<String> allLines = suspFile.getAllLines();
                 System.out.println("SuspiciousModificationPoint: " + suspFile.getSuspiciousLine());
-
+		System.out.println("At: " + suspFile.getFileName()+" "+suspFile.getClassName());
+		System.out.println("Line number: " + Integer.toString(suspFile.getSuspiciousLineNumber()));
                 for(String ingredient : ingredientPool.subList(0,100))
                 {
                     System.out.println("Used ingredient: " + ingredient);
@@ -131,23 +131,12 @@ public static void main(String[] args) throws Exception
                     if(resultValidation != null && resultValidation.isSuccessful())
                     {
                         System.out.println("Found patch for " + (project+"_"+bugid) + ", id: " + id);
-                        correct_patch.add(Integer.toString(id));
-                    }
+                    }else{
+			patch.delete();
+			patch.getParentFile().delete();
+		    }
                     id++;
                 }
-        }
-        if(!correct_patch.isEmpty())
-        {
-          String path_to_result = path_output+File.separator+project+File.separator+"result.txt";
-          File result = new File(path_to_result);
-          result.getParentFile().mkdirs();
-          result.createNewFile();
-          writer = new PrintWriter(result, "UTF-8");
-          for(String number : correct_patch)
-          {
-            writer.println(number);
-          }
-          writer.close();
         }
 }
 

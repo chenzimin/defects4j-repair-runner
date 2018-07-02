@@ -1,7 +1,7 @@
 #!/bin/bash
 
-project_folder="/Users/zimin/Desktop/KTH/Master-Thesis/projects"
-script_folder="/Users/zimin/Desktop/KTH/Master-Thesis/defects4j-repair-runner"
+project_folder="/mnt/vdb1/home/ubuntu/projects"
+script_folder="/mnt/vdb1/home/ubuntu/defects4j-repair-runner"
 
 if [ $# -eq 1 ]; then
   if [ "$1" = "Math" ]; then
@@ -78,6 +78,13 @@ if [ $# -eq 1 ]; then
     done
   fi
 else
+  cd $project_folder
+  mkdir $(echo "$1" | tr '[:upper:]' '[:lower:]')
+  cd ${project_folder}/$(echo "$1" | tr '[:upper:]' '[:lower:]')
+  mkdir $(echo "$1" | tr '[:upper:]' '[:lower:]')_$2
+  cd $(echo "$1" | tr '[:upper:]' '[:lower:]')_$2
+  defects4j checkout -p $1 -v ${2}b -w ./
+  cd $script_folder
   python defects4j-g5k-node.py -project $1 -tool Genprog -id $2
 fi
 
