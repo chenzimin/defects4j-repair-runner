@@ -77,7 +77,8 @@ public static void main(String[] args) throws Exception
         cs.command.put("-failing", failing);
         cs.command.put("-package", package_name);
         cs.command.put("-maxgen", "0");
-        cs.command.put("-customengine", ZmEngine.class.getCanonicalName());
+        cs.command.put("-jvm4testexecution", "/mnt/vdb1/home/ubuntu/jdk1.7.0_80/bin/");
+	cs.command.put("-customengine", ZmEngine.class.getCanonicalName());
         cs.command.put("-parameters", "disablelog:false:logtestexecution:true");
 
         System.out.println(Arrays.toString(cs.flat()));
@@ -93,7 +94,7 @@ public static void main(String[] args) throws Exception
         // Get the suspicious
         List<SuspiciousModificationPoint> susp = zmengine.getSuspicious();
         SuspiciousFile suspFile = null;
-        String path_output = "/mnt/vdb/output_extension";
+        String path_output = "/mnt/vdb1/home/ubuntu/output_extension";
         int id = 1;
         PrintWriter writer = null;
         String path_to_patch;
@@ -101,6 +102,9 @@ public static void main(String[] args) throws Exception
         FileProgramVariant fvariant = null;
         VariantValidationResult resultValidation = null;
         System.out.println("Number of SuspiciousModificationPoint: " + susp.size());
+
+	long start = System.currentTimeMillis();
+        long end = start + 2*60*60*1000;
 
         for(SuspiciousModificationPoint smp : susp)
         {
@@ -112,6 +116,10 @@ public static void main(String[] args) throws Exception
 		System.out.println("Line number: " + Integer.toString(suspFile.getSuspiciousLineNumber()));
                 for(String ingredient : ingredientPool.subList(0,100))
                 {
+		    if(System.currentTimeMillis() >= end)
+                    {
+                        break;
+                    }
                     System.out.println("Used ingredient: " + ingredient);
                     allLines.set(suspFile.getSuspiciousLineNumber()-1, ingredient);
                     path_to_patch = path_output+File.separator+project+File.separator+(project+"_"+bugid)+File.separator+id+File.separator+suspFile.getFileName();
@@ -136,6 +144,10 @@ public static void main(String[] args) throws Exception
 			patch.getParentFile().delete();
 		    }
                     id++;
+                }
+		if(System.currentTimeMillis() >= end)
+                {
+                    break;
                 }
         }
 }

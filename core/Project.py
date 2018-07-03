@@ -31,6 +31,8 @@ class Project(object):
 		#cmd += 'export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8;'
 		#cmd += 'export PATH="' + conf.javaHome + ':$PATH";'
 		cmd += 'cd ' + workingDirecotory +';'
+		cmd += 'sudo update-alternatives --set javac "/mnt/vdb1/home/ubuntu/jdk1.7.0_80/bin/javac"'+';'
+		cmd += 'sudo update-alternatives --set java "/mnt/vdb1/home/ubuntu/jdk1.7.0_80/bin/java"'+';'
 		cmd += 'defects4j compile;'
 		return subprocess.check_call(cmd, shell=True)
 

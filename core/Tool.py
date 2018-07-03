@@ -28,6 +28,7 @@ class Tool(object):
 		cmd += 'mkdir lib/;'
 		cmd += 'cp -r ' + conf.defects4jRoot + '/framework/projects/lib/* lib/;'
 		cmd += 'cp -r ' + conf.defects4jRoot + '/framework/projects/' + project.name + '/lib/* lib/;'
+		cmd += 'cp ' +conf.defects4jRepairRoot + '/jtestex7.jar lib/;'
 		cmd += 'find . -type f -name "package-info.java" -delete;'
 
 		subprocess.check_output(cmd, shell=True)
