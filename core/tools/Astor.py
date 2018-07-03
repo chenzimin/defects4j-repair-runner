@@ -55,11 +55,11 @@ class Astor(Tool):
 
 		cmd = 'cd ' + workdir +  ';'
 		#cmd += 'export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8;'
-		cmd += 'sudo update-alternatives --set java "/usr/lib/jvm/java-8-oracle/bin/java";'
-		cmd += 'sudo update-alternatives --set javac "/usr/lib/jvm/java-8-oracle/bin/javac";'
+		cmd += 'sudo update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/bin/java;'
+		cmd += 'sudo update-alternatives --set javac /usr/lib/jvm/java-8-openjdk-amd64/bin/javac;'
 		cmd += 'TZ="America/New_York"; export TZ;'
 		#cmd += 'export PATH="' + conf.javaHome7 + ':$PATH";'
-		cmd += 'time java %s -cp %s %s' % (conf.javaArgs, "/mnt/vdb1/home/ubuntu/defects4j-repair-runner/commons-cli-1.4.jar:/mnt/vdb1/home/ubuntu/defects4j-repair-runner/astor-0.0.2-SNAPSHOT-jar-with-dependencies.jar:/mnt/vdb1/home/ubuntu/defects4j-repair-runner/", "main")
+		cmd += 'time java %s -cp %s %s' % (conf.javaArgs, "/mnt/vdb/defects4j-repair-runner/commons-cli-1.4.jar:/mnt/vdb/defects4j-repair-runner/astor-0.0.2-SNAPSHOT-jar-with-dependencies.jar:/mnt/vdb/defects4j-repair-runner/", "main")
 		cmd += ' -location ' + workdir
 		cmd += ' -dependencies ' + classpath
 		cmd += ' -failing ' + failingTest
@@ -84,7 +84,7 @@ class Astor(Tool):
 		cmd += 'echo "\nDate: `date`\n";'
 		cmd += 'rm -rf ' + workdir +  ';'
 
-		logPath = os.path.join("/mnt/vdb1/home/ubuntu/output_extension", project.name, project.name+'_'+str(id), "stdout.log.full")
+		logPath = os.path.join("/mnt/vdb/output_extension", project.name, project.name+'_'+str(id), "stdout.log.full")
 		if not os.path.exists(os.path.dirname(logPath)):
                         os.makedirs(os.path.dirname(logPath))
 		logFile = file(logPath, 'w')

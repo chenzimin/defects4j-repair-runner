@@ -1,7 +1,7 @@
 #!/bin/bash
 
-project_folder="/mnt/vdb1/home/ubuntu/projects"
-script_folder="/mnt/vdb1/home/ubuntu/defects4j-repair-runner"
+project_folder="/mnt/vdb/projects"
+script_folder="/mnt/vdb/defects4j-repair-runner"
 
 if [ $# -eq 1 ]; then
   if [ "$1" = "Math" ]; then

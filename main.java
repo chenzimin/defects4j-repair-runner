@@ -77,7 +77,7 @@ public static void main(String[] args) throws Exception
         cs.command.put("-failing", failing);
         cs.command.put("-package", package_name);
         cs.command.put("-maxgen", "0");
-        cs.command.put("-jvm4testexecution", "/mnt/vdb1/home/ubuntu/jdk1.7.0_80/bin/");
+        cs.command.put("-jvm4testexecution", "/mnt/vdb/jdk1.7.0_80/bin/");
 	cs.command.put("-customengine", ZmEngine.class.getCanonicalName());
         cs.command.put("-parameters", "disablelog:false:logtestexecution:true");
 
@@ -94,7 +94,7 @@ public static void main(String[] args) throws Exception
         // Get the suspicious
         List<SuspiciousModificationPoint> susp = zmengine.getSuspicious();
         SuspiciousFile suspFile = null;
-        String path_output = "/mnt/vdb1/home/ubuntu/output_extension";
+        String path_output = "/mnt/vdb/output_extension";
         int id = 1;
         PrintWriter writer = null;
         String path_to_patch;
