@@ -2,12 +2,15 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.io.FileReader;
 import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Comparator;
 import java.util.Collections;
+import java.lang.Runtime;
+import java.lang.Process;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -98,10 +101,17 @@ public static void main(String[] args) throws Exception
         int id = 1;
         PrintWriter writer = null;
         String path_to_patch;
+	String path_to_diff;
         File patch = null;
+	File diff = null;
         FileProgramVariant fvariant = null;
         VariantValidationResult resultValidation = null;
-        System.out.println("Number of SuspiciousModificationPoint: " + susp.size());
+        Process p;
+	String command;
+        String line_output;
+        StringBuffer output;
+        BufferedReader reader;
+	System.out.println("Number of SuspiciousModificationPoint: " + susp.size());
 
 	long start = System.currentTimeMillis();
         long end = start + 2*60*60*1000;
@@ -110,7 +120,7 @@ public static void main(String[] args) throws Exception
         {
                 suspFile = new SuspiciousFile(smp);
                 Collections.sort(ingredientPool, new normalized_lcs_comparator(suspFile.getSuspiciousLine().trim()));
-                List<String> allLines = suspFile.getAllLines();
+                List<String> original_allLines = suspFile.getAllLines();
                 System.out.println("SuspiciousModificationPoint: " + suspFile.getSuspiciousLine());
 		System.out.println("At: " + suspFile.getFileName()+" "+suspFile.getClassName());
 		System.out.println("Line number: " + Integer.toString(suspFile.getSuspiciousLineNumber()));
@@ -121,7 +131,8 @@ public static void main(String[] args) throws Exception
                         break;
                     }
                     System.out.println("Used ingredient: " + ingredient);
-                    allLines.set(suspFile.getSuspiciousLineNumber()-1, ingredient);
+                    List<String> allLines = new ArrayList<String>(original_allLines);
+		    allLines.set(suspFile.getSuspiciousLineNumber()-1, ingredient);
                     path_to_patch = path_output+File.separator+project+File.separator+(project+"_"+bugid)+File.separator+id+File.separator+suspFile.getFileName();
                     patch = new File(path_to_patch);
                     System.out.println(patch.getAbsolutePath());
@@ -132,6 +143,7 @@ public static void main(String[] args) throws Exception
                     {
                       writer.println(line);
                     }
+		    writer.flush();
                     writer.close();
 
                     fvariant = new FileProgramVariant(id, suspFile.getClassName(), patch);
@@ -139,7 +151,24 @@ public static void main(String[] args) throws Exception
                     if(resultValidation != null && resultValidation.isSuccessful())
                     {
                         System.out.println("Found patch for " + (project+"_"+bugid) + ", id: " + id);
-                    }else{
+                    	command = "diff -u " + smp.getCodeElement().getPosition().getFile().getAbsolutePath() + " " + patch.getAbsolutePath();
+                        System.out.println("Execute command: " + command);
+                        p = Runtime.getRuntime().exec(command);
+                        p.waitFor();
+                        
+                        reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                        output = new StringBuffer();
+                        line_output = "";
+                        while ((line_output = reader.readLine())!= null) {
+                            output.append(line_output + "\n");
+                        }
+                        path_to_diff = path_output+File.separator+project+File.separator+(project+"_"+bugid)+File.separator+id+File.separator+"diff";
+                        diff = new File(path_to_diff);
+                        writer = new PrintWriter(diff, "UTF-8");
+                        writer.print(output.toString());
+                        writer.flush();
+                        writer.close();
+		    }else{
 			patch.delete();
 			patch.getParentFile().delete();
 		    }
